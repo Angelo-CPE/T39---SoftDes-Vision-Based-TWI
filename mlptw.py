@@ -59,7 +59,7 @@ if uploaded_file is not None:
     features = scaler.transform(features)
 
     # Perform prediction
-    prediction = svm_model.predict(features)
+    prediction = model.predict(features)
 
     # Display the prediction result
     if prediction == 1:
