@@ -49,7 +49,7 @@ if uploaded_file is not None:
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # Preprocess the image with Canny Edge Detection
-    edges = cv2.Canny(gray_image, 100, 200)
+    edges = cv2.Canny(gray_image, 150, 250)
 
     # Resize image to 256x256 (this is consistent with the model’s expected input)
     resized_image = cv2.resize(gray_image, (256, 256))  # Resize to match the expected feature size
