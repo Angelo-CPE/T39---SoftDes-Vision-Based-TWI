@@ -34,58 +34,32 @@ with open(model_path, "rb") as model_file:
 with open(scaler_path, "rb") as scaler_file:
     scaler = pickle.load(scaler_file)
 
-# Directory containing test images
-test_dir = 'test/'
-valid_path = 'valid'  # Base directory to save classified images
-flawed_dir = os.path.join(valid_path, 'flawed')
-not_flawed_dir = os.path.join(valid_path, 'not_flawed')
+st.title("Train Wheel Defect Classification")
 
-# Create output directories for Flawed and Not Flawed if they don't exist
-os.makedirs(flawed_dir, exist_ok=True)
-os.makedirs(not_flawed_dir, exist_ok=True)
+# Upload an image file for classification
+uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
-# Loop through each test image
-for filename in os.listdir(test_dir):
-    if filename.endswith('.jpg'):
-        # Read the test image
-        image_path = os.path.join(test_dir, filename)
-        image = cv2.imread(image_path)
+if uploaded_file is not None:
+    # Read and display the uploaded image
+    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+    image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    st.image(image, caption="Uploaded Image", use_column_width=True)
 
-        # Apply Canny edge detection
-        edges = cv2.Canny(image, 100, 200)
+    # Preprocess the image with Canny Edge Detection
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    edges = cv2.Canny(gray_image, 150, 250)
 
-        # Resize the image to 256x256 pixels
-        edges_resized = cv2.resize(edges, (256, 256))
+    # Resize image to 256x256 and flatten
+    resized_image = cv2.resize(edges, (256, 256)).flatten()
 
-        # Flatten the image for feature extraction
-        features = edges_resized.flatten().reshape(1, -1)
+    # Scale features using loaded scaler
+    scaled_features = scaler.transform([resized_image])
 
-        # Scale the features
-        features = scaler.transform(features)
+    # Perform prediction
+    prediction = model.predict(scaled_features)
 
-        # Predict using the SVM model
-        prediction = svm_model.predict(features)
-
-        # Determine the result text and save directory
-        if prediction[0] == -1:  # Assuming -1 means 'Not Flawed'
-            result_text = "Not Flawed"
-            save_dir = not_flawed_dir
-        else:  # Assuming anything else means 'Flawed'
-            result_text = "Flawed"
-            save_dir = flawed_dir
-
-        # Show the image with the result
-        cv2.putText(image, result_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-        cv2.imshow("Test Image", image)
-        cv2.waitKey(0)
-
-        # Generate a sequential file name
-        file_count = len(os.listdir(save_dir)) + 1
-        save_path = os.path.join(save_dir, f"{result_text.lower().replace(' ', '_')}{file_count}.jpg")
-        
-        # Save the image to the appropriate folder
-        cv2.imwrite(save_path, image)
-        print(f"Image saved to {save_path}")
-
-# Close all OpenCV windows
-cv2.destroyAllWindows()
+    # Display the prediction result
+    if prediction == 1:
+        st.write("Prediction: Defective")
+    else:
+        st.write("Prediction: Not Defective")
