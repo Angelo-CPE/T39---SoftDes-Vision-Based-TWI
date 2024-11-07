@@ -49,7 +49,7 @@ if uploaded_file is not None:
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     edges = cv2.Canny(gray_image, 150, 250)
 
-    flattened_image = resized_image.flatten().reshape(1, -1)
+    flattened_image = edges.flatten().reshape(1, -1)
 
     # Apply PCA if the model was trained with PCA (adjust n_components to match model)
     pca = PCA(n_components=255)  # Reducing to 255 features
