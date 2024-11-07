@@ -47,10 +47,10 @@ if uploaded_file is not None:
 
     # Preprocess the image with Canny Edge Detection
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    edges = cv2.Canny(gray_image, 150, 250)
+    edges = cv2.Canny(gray_image, 256, 256)
 
     # Resize image to 256x256 and flatten
-    resized_image = cv2.resize(image, (15, 17))  # This gives 65536 pixels when flattened
+    resized_image = cv2.resize(image, (256, 256))  # This gives 65536 pixels when flattened
     resized_image = resized_image.flatten()
 
     # Scale features using loaded scaler
