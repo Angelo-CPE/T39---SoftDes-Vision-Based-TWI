@@ -50,7 +50,9 @@ if uploaded_file is not None:
     edges = cv2.Canny(gray_image, 150, 250)
 
     # Resize image to 256x256 and flatten
-    resized_image = cv2.resize(edges, (256, 256)).flatten()
+    resized_image = cv2.resize(original_image, (15, 17))  # Adjust dimensions to produce 255 pixels when flattened
+    resized_image = resized_image.flatten()
+
 
     # Scale features using loaded scaler
     scaled_features = scaler.transform([resized_image])
