@@ -47,12 +47,12 @@ if uploaded_file is not None:
 
     # Convert the image to grayscale (if it's a color image)
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
+
     # Preprocess the image with Canny Edge Detection
     edges = cv2.Canny(gray_image, 100, 200)
 
-    # Resize image to 256x256 and flatten (for grayscale)
-    resized_image = cv2.resize(gray_image, (256, 256))  # This gives 65536 pixels when flattened
+    # Resize image to 15x17 (this is an assumption based on the model expecting 255 features)
+    resized_image = cv2.resize(gray_image, (15, 17))  # Resize to match the expected feature size
     resized_image = resized_image.flatten()
 
     # Scale features using loaded scaler
