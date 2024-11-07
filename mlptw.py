@@ -49,13 +49,16 @@ if uploaded_file is not None:
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     edges = cv2.Canny(gray_image, 150, 250)
 
-    # Resize image to 256x256 and flatten
-    resized_image = cv2.resize(edges, (256, 256)).flatten()
+    flattened_image = resized_image.flatten().reshape(1, -1)
 
-    # Scale features using loaded scaler
-    scaled_features = scaler.transform([resized_image])
+    # Apply PCA if the model was trained with PCA (adjust n_components to match model)
+    pca = PCA(n_components=255)  # Reducing to 255 features
+    flattened_image_pca = pca.fit_transform(flattened_image)
 
-    # Perform prediction
+    # Apply the scaler to normalize the features
+    scaled_features = scaler.transform(flattened_image_pca)
+
+    # Predict using the model
     prediction = model.predict(scaled_features)
 
     # Display the prediction result
