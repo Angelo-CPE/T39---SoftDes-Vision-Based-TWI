@@ -51,9 +51,9 @@ if uploaded_file is not None:
     # Preprocess the image with Canny Edge Detection
     edges = cv2.Canny(gray_image, 100, 200)
 
-    # Resize image to 15x17 (this is an assumption based on the model expecting 255 features)
-    resized_image = cv2.resize(gray_image, (15, 17))  # Resize to match the expected feature size
-    resized_image = resized_image.flatten()
+    # Resize image to 256x256 (this is consistent with the model’s expected input)
+    resized_image = cv2.resize(gray_image, (256, 256))  # Resize to match the expected feature size
+    resized_image = resized_image.flatten()  # Flatten the image to match the model's input shape
 
     # Scale features using loaded scaler
     scaled_features = scaler.transform([resized_image])
