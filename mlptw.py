@@ -5,6 +5,7 @@ import numpy as np
 import cv2
 import streamlit as st
 from sklearn import svm
+from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
 # File IDs from Google Drive
