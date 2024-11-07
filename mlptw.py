@@ -49,17 +49,17 @@ if uploaded_file is not None:
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # Preprocess the image with Canny Edge Detection
-    edges = cv2.Canny(image, 100, 200)
+    edges = cv2.Canny(gray_image, 100, 200)
 
-    # Resize image to 256x256 (this is consistent with the model’s expected input)
-    edges_resized = cv2.resize(edges, (256, 256))
-    features = edges_resized.flatten().reshape(1, -1)
+    # Resize image to 15x17 (as expected by the model)
+    resized_image = cv2.resize(gray_image, (256, 256))  # Resize to match the expected feature size
+    resized_image = resized_image.flatten()  # Flatten the image to match the model's input shape
 
     # Scale features using loaded scaler
-    features = scaler.transform(features)
+    scaled_features = scaler.transform([resized_image])
 
     # Perform prediction
-    prediction = model.predict(features)
+    prediction = model.predict(scaled_features)
 
     # Display the prediction result
     if prediction == 1:
